@@ -48,7 +48,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     context.chat_data['guesses'] = []
     context.chat_data['patterns'] = []
     await update.message.reply_text(
-        'Welcome to Wordle Helper! I will suggest words for you.\nLet\'s begin.'
+        "💡Welcome to Wordle Helper!💡 \n\n"
+        "1. Pick one of my suggested 5-letter words, or type your own.\n"
+        "2. Play that word on the real Wordle site/app.\n"
+        "3. Send me Wordle’s colours as a 5-letter code:\n"
+        " g = 🟩, y = 🟨, b = ⬛   \n\n(e.g., 🟩🟨⬛🟩⬛ → gybgb)\n\n"
+        "I’ll narrow the possibilities and suggest the next best guesses.\n"
+        "Type /new anytime to start over. Have fun!"
     )
     await suggest_next(update, context)
 
@@ -106,7 +112,7 @@ async def suggest_next(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         for w, s in top5
     ]
     # Build the custom‐word button
-    custom_button = InlineKeyboardButton('Enter custom word', callback_data='custom')
+    custom_button = InlineKeyboardButton('Enter your own guess', callback_data='custom')
     keyboard = [
         suggestion_buttons[:3],
         suggestion_buttons[3:],    
@@ -115,7 +121,7 @@ async def suggest_next(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     reply_markup = InlineKeyboardMarkup(keyboard)
     await context.bot.send_message(
         chat_id,
-        'Choose your next guess:',
+        "Pick a suggested word:",
         reply_markup=reply_markup
     )
 
@@ -144,7 +150,7 @@ async def handle_guess(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         await ask_feedback(query, context)
     elif data == 'custom':
         context.chat_data['awaiting_custom'] = True
-        await query.message.reply_text('Please send your custom 5-letter guess.')
+        await query.message.reply_text('Please send your own 5-letter guess.')
 
 async def ask_feedback(source, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Prompt user to send feedback pattern for the current guess."""
@@ -157,9 +163,10 @@ async def ask_feedback(source, context: ContextTypes.DEFAULT_TYPE) -> None:
     context.chat_data['awaiting_feedback'] = True
     await context.bot.send_message(
         chat_id,
-        f"Send feedback for '{word.upper()}'.\n"
-        f"\nUse '{GREEN}' for correct (🟩), '{YELLOW}' for wrong position (🟨), "
-        f"and '{BLACK}' for absent (⬛)."
+    f"How did '{word.upper()}' score in Wordle?\n\n"
+    "Reply with the 5-letter result code:\n"
+    "g = 🟩 correct | y = 🟨 wrong spot | b = ⬛ absent\n"
+    "Example: gybgb"
     )
 
 def simulate_feedback(answer: str, guess: str) -> str:
