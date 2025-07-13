@@ -203,7 +203,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         valid_chars = {GREEN, YELLOW, BLACK}
         if len(text) != 5 or any(ch not in valid_chars for ch in text):
             await update.message.reply_text(
-                f"Invalid feedback. Use exactly 5 symbols from '{GREEN}', '{YELLOW}', '{BLACK}'."
+                f"Invalid feedback. Use exactly 5 symbols from '{GREEN}', '{YELLOW}', '{BLACK}'. \ne.g, 'ggbgy'"
             )
             return
 
