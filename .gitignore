@@ -3,7 +3,7 @@ debug_tiles/
 images/
 *.jpg
 *.png
-cnn_analyse.py
+cnn_analyse_preprod.py
 
 .env
 __pycache__/

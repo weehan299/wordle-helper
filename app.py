@@ -1,4 +1,3 @@
-
 import os
 import logging
 import random
@@ -12,7 +11,7 @@ from telegram.ext import (
     ContextTypes,
 )
 from dotenv import load_dotenv
-from cnn_analyse_prod import analyze_wordle_screenshot  # Import your analyzer
+from paste_2 import analyze_wordle_screenshot  # Import your analyzer
 
 # Enable logging
 logging.basicConfig(
@@ -62,7 +61,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "  (e.g., 🟩🟨⬛🟩⬛ → gybgb)\n\n"
         "📸 **Screenshot Mode:**\n"
         "• Just upload a screenshot of your Wordle game!\n"
-        "• I'll read all your guesses and suggest the next word\n\n"
+        "• I'll automatically read all your guesses and suggest the next word\n\n"
         "Type /new anytime to start over. Have fun!"
     )
     await suggest_next(update, context)
@@ -237,13 +236,11 @@ async def suggest_next(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     ]
     # Build the custom‐word button
     custom_button = InlineKeyboardButton('Enter your own guess', callback_data='custom')
-    screenshot_button = InlineKeyboardButton('📸 Upload Screenshot', callback_data='screenshot_info')
     
     keyboard = [
         suggestion_buttons[:3],
         suggestion_buttons[3:],    
-        [custom_button],
-        [screenshot_button]
+        [custom_button]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
@@ -279,15 +276,6 @@ async def handle_guess(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     elif data == 'custom':
         context.chat_data['awaiting_custom'] = True
         await query.message.reply_text('Please send your own 5-letter guess.')
-    elif data == 'screenshot_info':
-        await query.message.reply_text(
-            "📸 **Upload a Screenshot:**\n\n"
-            "Just send me a photo of your Wordle game and I'll automatically:\n"
-            "• Read all your completed guesses\n"
-            "• Analyze the color patterns\n"
-            "• Suggest the best next word\n\n"
-            "Make sure the Wordle grid is clearly visible in the image!"
-        )
 
 async def ask_feedback(source, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Prompt user to send feedback pattern for the current guess."""
@@ -380,7 +368,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     # Fallback
     await update.message.reply_text(
-        'Please use /new to start a game, select one of the provided options, or upload a screenshot! 📸'
+        'Please use /new to start a game, select one of the provided options, or upload a screenshot!'
     )
 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
