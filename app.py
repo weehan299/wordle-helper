@@ -243,11 +243,9 @@ async def suggest_next(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    candidates_text = f"({len(candidates)} possible words)" if len(candidates) < len(WORDS) else ""
-    
     await context.bot.send_message(
         chat_id,
-        f"🎯 **Pick a suggested word** {candidates_text}:",
+        f"🎯 **Pick a suggested word**:",
         reply_markup=reply_markup
     )
 
