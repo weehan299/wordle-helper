@@ -11,7 +11,7 @@ from telegram.ext import (
     ContextTypes,
 )
 from dotenv import load_dotenv
-from paste_2 import analyze_wordle_screenshot  # Import your analyzer
+from screenshot_analyser import analyze_wordle_screenshot  # Import your analyzer
 
 # Enable logging
 logging.basicConfig(
