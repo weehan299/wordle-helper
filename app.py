@@ -50,16 +50,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     context.chat_data['patterns'] = []
     await update.message.reply_text(
         "💡Welcome to Wordle Helper!💡 \n\n"
-        "🎮 **Two ways to play:**\n"
-        "1. **Manual Mode**: Pick suggested words, play them, then send feedback codes\n"
-        "2. **Screenshot Mode**: Upload a Wordle screenshot and I'll analyze it automatically!\n\n"
-        "📱 **Manual Mode:**\n"
+        "🎮 Two ways to use:\n"
+        "1. Manual Mode and Screenshot Mode\n\n"
+        "📱 Manual Mode:\n"
         "• Pick one of my suggested 5-letter words, or type your own\n"
         "• Play that word on the real Wordle site/app\n"
         "• Send me Wordle's colours as a 5-letter code:\n"
         "  g = 🟩, y = 🟨, b = ⬛   \n"
         "  (e.g., 🟩🟨⬛🟩⬛ → gybgb)\n\n"
-        "📸 **Screenshot Mode:**\n"
+        "📸 Screenshot Mode:\n"
         "• Just upload a screenshot of your Wordle game! (Feature only work in dark mode Wordle for now.)\n"
         "• I'll automatically read all your guesses and suggest the next word\n\n"
         "Type /new anytime to start over. Have fun!"
@@ -161,7 +160,7 @@ async def process_screenshot_results(update: Update, context: ContextTypes.DEFAU
     
     # Show analysis results
     candidates_count = len(context.chat_data['candidates'])
-    response_text += f"\n📊 **Analysis:** {candidates_count} possible words remaining\n"
+    response_text += f"\n📊 **Analysis:** {candidates_count} possible words\n"
     
     await update.message.reply_text(response_text)
     
@@ -244,7 +243,7 @@ async def suggest_next(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    candidates_text = f"({len(candidates)} candidates remaining)" if len(candidates) < len(WORDS) else ""
+    candidates_text = f"({len(candidates)} possible words)" if len(candidates) < len(WORDS) else ""
     
     await context.bot.send_message(
         chat_id,
