@@ -2,6 +2,10 @@
 
 An AI-powered Telegram bot that assists Wordle solving through deep learning techniques. Features intelligent word suggestion algorithms and computer vision powered by a custom-trained Convolutional Neural Network for automatic screenshot analysis.
 
+## Try it now!
+**Link**: https://t.me/wordle_helper_new_bot
+**Bot username**: @wordle_helper_new_bot
+
 ## ✨ Deep Learning Features
 
 ### 🧠 Custom CNN Architecture
