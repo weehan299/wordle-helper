@@ -5,8 +5,8 @@ An AI-powered Telegram bot that assists Wordle solving through advanced deep lea
 ## ✨ Deep Learning Features
 
 ### 🧠 Custom CNN Architecture
-- **State-of-the-art letter recognition** using a 4-block Convolutional Neural Network
-- **Advanced image preprocessing** with adaptive thresholding and morphological operations
+- **OCR using CNN** using a 4-block Convolutional Neural Network
+- **Image preprocessing** with adaptive thresholding and morphological operations
 - **Robust feature extraction** through batch normalization and dropout regularization
 - **Transfer learning principles** with optimized weight initialization (Kaiming normal)
 
@@ -14,13 +14,6 @@ An AI-powered Telegram bot that assists Wordle solving through advanced deep lea
 - **Intelligent grid detection** using morphological operations and contour analysis
 - **Adaptive color classification** with HSV color space analysis
 - **Multi-stage image processing** including noise reduction and border cropping
-- **Real-time inference** with GPU acceleration support (CUDA/CPU adaptive)
-
-### 🎯 AI-Powered Word Suggestions
-- **Frequency-based scoring algorithm** with statistical letter analysis
-- **Probabilistic candidate filtering** using Wordle's exact feedback simulation
-- **Intelligent randomization** to balance exploration vs exploitation
-- **Dynamic optimization** that adapts to remaining solution space
 
 ### 🔤 Manual Mode
 - Interactive word suggestions based on advanced statistical analysis
@@ -35,13 +28,6 @@ An AI-powered Telegram bot that assists Wordle solving through advanced deep lea
 - **Multi-row processing** with simultaneous word and color pattern extraction
 - **Adaptive preprocessing** that handles various lighting conditions and tile styles
 - **Real-time inference** with optimized model architecture for fast predictions
-
-### 🤖 Advanced AI Algorithms
-- **Sophisticated word filtering** based on Wordle feedback simulation
-- **Statistical frequency analysis** with weighted scoring mechanisms
-- **Bayesian-inspired candidate optimization** for maximum information gain
-- **Intelligent exploration-exploitation balance** in word selection
-- **Edge case handling** for complex letter patterns and repetitions
 
 ## 🚀 Quick Start
 
@@ -144,51 +130,6 @@ class RobustCNN(nn.Module):
 - **Adaptive Pooling**: Global average pooling for translation invariance
 - **Multi-stage Classification**: Hierarchical fully-connected layers
 
-### Computer Vision Pipeline
-```python
-# Advanced Image Processing Chain
-1. Grid Detection: Morphological operations + contour analysis
-2. Tile Extraction: Adaptive thresholding + region segmentation  
-3. Preprocessing: Border cropping + noise reduction
-4. Color Analysis: HSV color space + statistical classification
-5. CNN Inference: Real-time letter prediction with confidence scores
-```
-
-### Training Specifications
-- **Input Resolution**: 224×224 RGB images
-- **Data Augmentation**: Rotation, brightness, contrast variations
-- **Loss Function**: Cross-entropy with class balancing
-- **Optimization**: Adam optimizer with learning rate scheduling
-- **Regularization**: L2 weight decay + dropout layers
-- **Validation**: K-fold cross-validation for robust performance metrics
-
-### AI-Powered Word Filtering Algorithm
-The bot implements sophisticated machine learning principles:
-
-1. **Feedback Simulation Engine**
-   - Exact Wordle rule implementation with edge case handling
-   - Handles complex scenarios: repeated letters, position constraints
-   - Validates against ground truth using deterministic logic
-
-2. **Statistical Scoring System**
-   - **Letter Frequency Analysis**: Weighted by position and occurrence
-   - **Information Theory**: Maximizes expected information gain
-   - **Bayesian Updates**: Dynamically adjusts probabilities based on feedback
-   - **Unique Letter Bonus**: Prevents over-representation bias
-
-3. **Intelligent Candidate Selection**
-   - **Exploration vs Exploitation**: Balances popular vs diverse words
-   - **Contextual Randomization**: Adaptive selection based on game state
-   - **Probability Calibration**: Normalizes scores for interpretable confidence
-   - **Dynamic Filtering**: Real-time candidate space optimization
-
-### Performance Metrics & Model Evaluation
-- **CNN Accuracy**: 96.3% on validation set (letter recognition)
-- **Color Classification**: 98.7% accuracy across lighting conditions
-- **End-to-end Pipeline**: 94.2% success rate on real screenshots
-- **Inference Speed**: <100ms per image on GPU, <500ms on CPU
-- **Model Size**: 15.2MB optimized for deployment efficiency
-
 ## 📁 Project Structure
 
 ```
@@ -255,21 +196,11 @@ The CNN model requires:
 
 ## 🎯 Performance & Benchmarks
 
-### Deep Learning Model Performance
-- **Letter Recognition Accuracy**: 96.3% ± 0.8% (10-fold CV)
-- **Color Classification F1-Score**: 0.987 (macro-averaged)
-- **Inference Latency**: 
-  - GPU (CUDA): 47ms ± 12ms per image
-  - CPU: 312ms ± 45ms per image
-- **Model Efficiency**: 15.2MB parameters, 94.2% compression ratio
-- **Robustness**: Tested on 10,000+ diverse screenshot conditions
-
 ### AI Algorithm Efficiency
 - **Word Suggestion Speed**: <50ms for candidate filtering
 - **Memory Usage**: ~200MB with loaded CNN model + word embeddings
 - **Accuracy Validation**: 99.1% correct Wordle rule simulation
 - **Optimization**: 78% reduction in candidate space per feedback round
-- **Scalability**: Handles 1000+ concurrent users efficiently
 
 ## 🐛 Known Issues
 
@@ -286,50 +217,27 @@ The CNN model requires:
 4. **Optimization**: Model quantization, pruning, knowledge distillation
 5. **Data Augmentation**: Advanced techniques like AutoAugment, RandAugment
 
-### Research Opportunities
-- **Few-shot Learning**: Adapt to new Wordle variants with minimal data
-- **Adversarial Robustness**: Improve model resilience to image corruption
-- **Multi-modal Learning**: Combine visual and textual features
-- **Active Learning**: Intelligent data selection for model improvement
-
-### Standard Contribution Process
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ### Development Setup
 ```bash
 # Install development dependencies
-pip install -r requirements-dev.txt
+pip install -r requirements.txt
 
 # Install deep learning frameworks
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
-
-# Run model training
-python train_model.py --config config/training.yaml
-
-# Run tests including CNN evaluation
-python -m pytest tests/ --cov=src/
-
-# Format code
-black *.py
 ```
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📞 Support
+## Support
 
-- 🐛 **Bug Reports**: Open an issue with detailed description
-- 💡 **Feature Requests**: Open an issue with "enhancement" label
-- 📧 **Contact**: [weehan1998@gmail.com]
+- **Bug Reports**: Open an issue with detailed description
+- **Feature Requests**: Open an issue with "enhancement" label
+- **Contact**: [weehan1998@gmail.com]
 
 ---
-
-**🚀 Built with cutting-edge deep learning and computer vision technologies**
 
 *This project demonstrates advanced AI techniques including custom CNN architectures, computer vision pipelines, and intelligent optimization algorithms. Perfect for researchers and developers interested in practical applications of deep learning in gaming and puzzle-solving domains.*
 
