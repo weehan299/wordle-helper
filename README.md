@@ -4,6 +4,7 @@ An AI-powered Telegram bot that assists Wordle solving through deep learning tec
 
 ## Try it now!
 **Link**: https://t.me/wordle_helper_new_bot
+
 **Bot username**: @wordle_helper_new_bot
 
 ## ✨ Deep Learning Features
