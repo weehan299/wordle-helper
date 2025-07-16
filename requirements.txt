@@ -8,3 +8,19 @@ python-dotenv==1.1.1
 python-telegram-bot==22.2
 sniffio==1.3.1
 typing_extensions==4.14.1
+
+# OpenCV for image processing
+opencv-python>=4.7.0.72
+
+# NumPy for array operations
+numpy>=1.24.3
+
+# Pillow for image I/O
+Pillow>=9.4.0
+
+# PyTorch and torchvision for your neural‑net code
+torch>=2.0.0
+torchvision>=0.15.1
+
+# Python wrapper for Tesseract OCR
+pytesseract>=0.3.10
