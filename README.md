@@ -226,11 +226,6 @@ pip install -r requirements.txt
 # Install deep learning frameworks
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
 ```
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Support
 
 - **Bug Reports**: Open an issue with detailed description
