@@ -1,6 +1,6 @@
 # 🎮 Wordle Helper Bot
 
-An AI-powered Telegram bot that assists Wordle solving through advanced deep learning techniques. Features intelligent word suggestion algorithms and computer vision powered by a custom-trained Convolutional Neural Network for automatic screenshot analysis.
+An AI-powered Telegram bot that assists Wordle solving through deep learning techniques. Features intelligent word suggestion algorithms and computer vision powered by a custom-trained Convolutional Neural Network for automatic screenshot analysis.
 
 ## ✨ Deep Learning Features
 
@@ -16,7 +16,7 @@ An AI-powered Telegram bot that assists Wordle solving through advanced deep lea
 - **Multi-stage image processing** including noise reduction and border cropping
 
 ### 🔤 Manual Mode
-- Interactive word suggestions based on advanced statistical analysis
+- Interactive word suggestions based on statistical analysis
 - Input your guesses and receive color feedback
 - Smart candidate filtering using Wordle's exact rules
 - Probability-based word recommendations with confidence scores
@@ -61,7 +61,7 @@ An AI-powered Telegram bot that assists Wordle solving through advanced deep lea
 
 5. **Train or download the CNN model**
    - Train your own model using the provided deep learning architecture
-   - Model includes advanced techniques: BatchNorm, Dropout, Adaptive Pooling
+   - Model includes: BatchNorm, Dropout, Adaptive Pooling
    - Save trained model as `wordle_cnn_model.pth` (PyTorch format)
    - GPU training recommended for optimal performance
 
@@ -114,7 +114,7 @@ Bot: 📊 Analysis: 12 possible words
 
 ### CNN Model Details
 ```python
-# Advanced 4-Block CNN Architecture
+# 4-Block CNN Architecture
 class RobustCNN(nn.Module):
     - Block 1: 64 filters, 3x3 conv, BatchNorm, ReLU, MaxPool, Dropout(0.25)
     - Block 2: 128 filters, 3x3 conv, BatchNorm, ReLU, MaxPool, Dropout(0.25)  
@@ -144,7 +144,7 @@ wordle-helper-bot/
 └── README.md             # This file
 ```
 
-## 🔧 Advanced Configuration
+## 🔧 Configuration
 
 ### Deep Learning Model Settings
 ```python
@@ -183,7 +183,7 @@ The CNN model requires:
 - **Validation Strategy**: Stratified K-fold with temporal splits
 - **Hyperparameter Tuning**: Bayesian optimization for 15+ parameters
 
-### Advanced Training Techniques
+### Training Techniques
 - **Progressive Resizing**: Start with 112x112, increase to 224x224
 - **Mixup Augmentation**: Improved generalization through sample mixing
 - **Label Smoothing**: Reduces overfitting with soft targets (α=0.1)
