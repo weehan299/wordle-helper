@@ -60,7 +60,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "  g = 🟩, y = 🟨, b = ⬛   \n"
         "  (e.g., 🟩🟨⬛🟩⬛ → gybgb)\n\n"
         "📸 **Screenshot Mode:**\n"
-        "• Just upload a screenshot of your Wordle game!\n"
+        "• Just upload a screenshot of your Wordle game! (Feature only work in dark mode Wordle for now.)\n"
         "• I'll automatically read all your guesses and suggest the next word\n\n"
         "Type /new anytime to start over. Have fun!"
     )
@@ -133,7 +133,7 @@ async def process_screenshot_results(update: Update, context: ContextTypes.DEFAU
             f"📊 **Your guesses:**\n" + 
             "\n".join([f"{i+1}. {result['word']} → {format_colors(result['colors'])}" 
                       for i, result in enumerate(results)]) +
-            "\n\nUse /new to start a new game."
+            "\n\nUse /new to start a new game or just upload another screenshot."
         )
         return
     
@@ -186,7 +186,7 @@ async def suggest_next(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     chat_id = update.effective_chat.id
     candidates = context.chat_data.get('candidates', WORDS)
     if not candidates:
-        await context.bot.send_message(chat_id, 'No candidates remain! Try /new to start over.')
+        await context.bot.send_message(chat_id, 'No candidates remain! Try /new to start over or send a wordle screenshot.')
         return
 
     # Compute letter frequencies
