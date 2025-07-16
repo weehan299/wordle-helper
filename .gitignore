@@ -1,4 +1,10 @@
 # Byte-compiled / optimized / DLL files
+debug_tiles/
+images/
+*.jpg
+*.png
+cnn_analyse.py
+
 .env
 __pycache__/
 *.py[codz]

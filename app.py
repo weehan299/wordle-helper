@@ -1,3 +1,4 @@
+
 import os
 import logging
 import random
@@ -11,6 +12,7 @@ from telegram.ext import (
     ContextTypes,
 )
 from dotenv import load_dotenv
+from paste_2 import analyze_wordle_screenshot  # Import your analyzer
 
 # Enable logging
 logging.basicConfig(
@@ -49,14 +51,136 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     context.chat_data['patterns'] = []
     await update.message.reply_text(
         "💡Welcome to Wordle Helper!💡 \n\n"
-        "1. Pick one of my suggested 5-letter words, or type your own.\n"
-        "2. Play that word on the real Wordle site/app.\n"
-        "3. Send me Wordle’s colours as a 5-letter code:\n"
-        " g = 🟩, y = 🟨, b = ⬛   \n\n(e.g., 🟩🟨⬛🟩⬛ → gybgb)\n\n"
-        "I’ll narrow the possibilities and suggest the next best guesses.\n"
+        "🎮 **Two ways to play:**\n"
+        "1. **Manual Mode**: Pick suggested words, play them, then send feedback codes\n"
+        "2. **Screenshot Mode**: Upload a Wordle screenshot and I'll analyze it automatically!\n\n"
+        "📱 **Manual Mode:**\n"
+        "• Pick one of my suggested 5-letter words, or type your own\n"
+        "• Play that word on the real Wordle site/app\n"
+        "• Send me Wordle's colours as a 5-letter code:\n"
+        "  g = 🟩, y = 🟨, b = ⬛   \n"
+        "  (e.g., 🟩🟨⬛🟩⬛ → gybgb)\n\n"
+        "📸 **Screenshot Mode:**\n"
+        "• Just upload a screenshot of your Wordle game!\n"
+        "• I'll read all your guesses and suggest the next word\n\n"
         "Type /new anytime to start over. Have fun!"
     )
     await suggest_next(update, context)
+
+async def handle_screenshot(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle screenshot uploads and analyze them."""
+    try:
+        # Download the photo
+        photo_file = await update.message.photo[-1].get_file()
+        
+        # Create temp directory if it doesn't exist
+        os.makedirs('temp', exist_ok=True)
+        
+        # Save the photo temporarily
+        photo_path = f'temp/screenshot_{update.effective_chat.id}.jpg'
+        await photo_file.download_to_drive(photo_path)
+        
+        # Analyze the screenshot
+        await update.message.reply_text("📸 Analyzing your screenshot...")
+        
+        try:
+            results = analyze_wordle_screenshot(photo_path)
+            
+            if not results:
+                await update.message.reply_text(
+                    "❌ No completed words found in the screenshot. Make sure:\n"
+                    "• The Wordle grid is clearly visible\n"
+                    "• At least one word is completely filled\n"
+                    "• Try uploading a clearer screenshot"
+                )
+                return
+            
+            # Process the results
+            await process_screenshot_results(update, context, results)
+            
+        except Exception as e:
+            logger.error(f"Error analyzing screenshot: {e}")
+            await update.message.reply_text(
+                "❌ Error analyzing screenshot. Please make sure:\n"
+                "• The image shows a Wordle game\n"
+                "• The grid is clearly visible\n"
+                "• Try uploading a different screenshot"
+            )
+            
+    except Exception as e:
+        logger.error(f"Error handling screenshot: {e}")
+        await update.message.reply_text("❌ Error processing image. Please try again.")
+    
+    finally:
+        # Clean up temporary file
+        if os.path.exists(photo_path):
+            os.remove(photo_path)
+
+async def process_screenshot_results(update: Update, context: ContextTypes.DEFAULT_TYPE, results: list) -> None:
+    """Process the results from screenshot analysis."""
+    chat_id = update.effective_chat.id
+    
+    # Reset game state
+    context.chat_data['candidates'] = WORDS.copy()
+    context.chat_data['guesses'] = []
+    context.chat_data['patterns'] = []
+    
+    # Check if the game is already won
+    if results and results[-1]['colors'] == 'ggggg':
+        last_word = results[-1]['word']
+        await update.message.reply_text(
+            f"🎉 Congratulations! 🎉\n"
+            f"You already solved it with: **{last_word}**!\n\n"
+            f"📊 **Your guesses:**\n" + 
+            "\n".join([f"{i+1}. {result['word']} → {format_colors(result['colors'])}" 
+                      for i, result in enumerate(results)]) +
+            "\n\nUse /new to start a new game."
+        )
+        return
+    
+    # Process each guess to filter candidates
+    response_text = "📸 **Screenshot Analysis:**\n\n"
+    
+    for i, result in enumerate(results):
+        word = result['word'].lower()
+        colors = result['colors']
+        
+        # Add to response
+        response_text += f"{i+1}. {word.upper()} → {format_colors(colors)}\n"
+        
+        # Record the guess
+        context.chat_data['guesses'].append(word)
+        context.chat_data['patterns'].append(colors)
+        
+        # Filter candidates based on this guess
+        new_candidates = []
+        for candidate in context.chat_data['candidates']:
+            if simulate_feedback(candidate, word) == colors:
+                new_candidates.append(candidate)
+        
+        context.chat_data['candidates'] = new_candidates
+    
+    # Show analysis results
+    candidates_count = len(context.chat_data['candidates'])
+    response_text += f"\n📊 **Analysis:** {candidates_count} possible words remaining\n"
+    
+    await update.message.reply_text(response_text)
+    
+    # Suggest next words if game isn't finished
+    if candidates_count > 0:
+        await suggest_next(update, context)
+    else:
+        await update.message.reply_text(
+            "🤔 No valid words found matching your pattern. This might be due to:\n"
+            "• OCR reading errors in the screenshot\n"
+            "• A word not in my dictionary\n"
+            "• Try manual mode or upload a clearer screenshot"
+        )
+
+def format_colors(colors: str) -> str:
+    """Format color pattern with emojis."""
+    color_map = {'g': '🟩', 'y': '🟨', 'b': '⬛'}
+    return ''.join(color_map.get(c, c) for c in colors)
 
 async def suggest_next(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Compute and display top 5 candidate words with likelihoods."""
@@ -113,15 +237,21 @@ async def suggest_next(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     ]
     # Build the custom‐word button
     custom_button = InlineKeyboardButton('Enter your own guess', callback_data='custom')
+    screenshot_button = InlineKeyboardButton('📸 Upload Screenshot', callback_data='screenshot_info')
+    
     keyboard = [
         suggestion_buttons[:3],
         suggestion_buttons[3:],    
-        [custom_button],           
+        [custom_button],
+        [screenshot_button]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    candidates_text = f"({len(candidates)} candidates remaining)" if len(candidates) < len(WORDS) else ""
+    
     await context.bot.send_message(
         chat_id,
-        "Pick a suggested word:",
+        f"🎯 **Pick a suggested word** {candidates_text}:",
         reply_markup=reply_markup
     )
 
@@ -141,8 +271,6 @@ async def handle_guess(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                 f"🎉 {word.upper()} should be the correct answer! Congratulations! 🎉\n"
                 "Use /new to start a new game."
             )
-            # (optionally) clear out game state here if you want:
-            # context.chat_data.clear()
             return
 
         # otherwise, proceed as normal
@@ -151,6 +279,15 @@ async def handle_guess(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     elif data == 'custom':
         context.chat_data['awaiting_custom'] = True
         await query.message.reply_text('Please send your own 5-letter guess.')
+    elif data == 'screenshot_info':
+        await query.message.reply_text(
+            "📸 **Upload a Screenshot:**\n\n"
+            "Just send me a photo of your Wordle game and I'll automatically:\n"
+            "• Read all your completed guesses\n"
+            "• Analyze the color patterns\n"
+            "• Suggest the best next word\n\n"
+            "Make sure the Wordle grid is clearly visible in the image!"
+        )
 
 async def ask_feedback(source, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Prompt user to send feedback pattern for the current guess."""
@@ -163,10 +300,10 @@ async def ask_feedback(source, context: ContextTypes.DEFAULT_TYPE) -> None:
     context.chat_data['awaiting_feedback'] = True
     await context.bot.send_message(
         chat_id,
-    f"How did '{word.upper()}' score in Wordle?\n\n"
-    "Reply with the 5-letter result code:\n"
-    "g = 🟩 correct | y = 🟨 wrong spot | b = ⬛ absent\n"
-    "Example: gybgb"
+        f"How did '{word.upper()}' score in Wordle?\n\n"
+        "Reply with the 5-letter result code:\n"
+        "g = 🟩 correct | y = 🟨 wrong spot | b = ⬛ absent\n"
+        "Example: gybgb"
     )
 
 def simulate_feedback(answer: str, guess: str) -> str:
@@ -243,7 +380,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     # Fallback
     await update.message.reply_text(
-        'Please use /new to start a game or select one of the provided options.'
+        'Please use /new to start a game, select one of the provided options, or upload a screenshot! 📸'
     )
 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -263,12 +400,14 @@ def main() -> None:
     app.add_handler(CommandHandler(['start', 'new'], start))
     # Inline button callbacks
     app.add_handler(CallbackQueryHandler(handle_guess))
+    # Photo handler for screenshots
+    app.add_handler(MessageHandler(filters.PHOTO, handle_screenshot))
     # Text messages (custom words & feedback)
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     # Error handler
     app.add_error_handler(error_handler)
 
-    logger.info('Starting Wordle Helper Bot...')
+    logger.info('Starting Wordle Helper Bot with Screenshot Support...')
     app.run_polling()
 
 if __name__ == '__main__':
